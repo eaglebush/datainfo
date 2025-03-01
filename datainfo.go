@@ -5,7 +5,6 @@ import (
 )
 
 type (
-	// SequenceGeneratorInfo - sequence generator query
 	SequenceGeneratorInfo struct {
 		UpsertQuery     string
 		ResultQuery     string
