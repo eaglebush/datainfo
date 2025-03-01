@@ -123,6 +123,9 @@ func ReferenceMode(indeed bool) DataOption {
 // ReferenceModePrefix is reference mode prefix. The default is 'ref'.
 func ReferenceModePrefix(pfx string) DataOption {
 	return func(d *DataInfo) error {
+		if pfx == "" {
+			pfx = refModePfx
+		}
 		d.ReferenceModePrefix = new(string)
 		*d.ReferenceModePrefix = pfx
 		return nil
@@ -141,6 +144,9 @@ func InterpolateTables(indeed bool) DataOption {
 // ConnectionString sets the connection string of the data access library
 func ConnectionString(conn string) DataOption {
 	return func(d *DataInfo) error {
+		if conn == "" {
+			return nil
+		}
 		d.ConnectionString = new(string)
 		*d.ConnectionString = conn
 		return nil
@@ -150,6 +156,9 @@ func ConnectionString(conn string) DataOption {
 // Driver name sets the driver name of the data access library
 func DriverName(name string) DataOption {
 	return func(d *DataInfo) error {
+		if name == "" {
+			return nil
+		}
 		d.DriverName = new(string)
 		*d.DriverName = name
 		return nil
@@ -159,6 +168,9 @@ func DriverName(name string) DataOption {
 // HelperID sets the helper ID to use for datahelperlite implementation
 func HelperID(id string) DataOption {
 	return func(d *DataInfo) error {
+		if id == "" {
+			return nil
+		}
 		d.HelperID = new(string)
 		*d.HelperID = id
 		return nil
@@ -177,6 +189,9 @@ func ParameterInSequence(indeed bool) DataOption {
 // ParameterPlaceHolder sets the parameter place holder. The default is `?`.
 func ParameterPlaceHolder(holder string) DataOption {
 	return func(d *DataInfo) error {
+		if holder == "" {
+			holder = paramPh
+		}
 		d.ParameterPlaceHolder = new(string)
 		*d.ParameterPlaceHolder = holder
 		return nil
@@ -186,6 +201,9 @@ func ParameterPlaceHolder(holder string) DataOption {
 // StringEnclosingChar sets the character that encloses a string in the query
 func StringEnclosingChar(char string) DataOption {
 	return func(d *DataInfo) error {
+		if char == "" {
+			char = strEncChar
+		}
 		d.StringEnclosingChar = new(string)
 		*d.StringEnclosingChar = char
 		return nil
@@ -195,6 +213,9 @@ func StringEnclosingChar(char string) DataOption {
 // StringEscapeChar sets the character that escapes a reserved character such as the character that encloses a s string
 func StringEscapeChar(char string) DataOption {
 	return func(d *DataInfo) error {
+		if char == "" {
+			char = strEscChar
+		}
 		d.StringEscapeChar = new(string)
 		*d.StringEscapeChar = char
 		return nil
@@ -204,6 +225,9 @@ func StringEscapeChar(char string) DataOption {
 // ReservedWordEscapeChar sets the reserved word escape character(s). For escaping with different opening and closing characters, just set to both. Example. `[]` for SQL server
 func ReservedWordEscapeChar(char string) DataOption {
 	return func(d *DataInfo) error {
+		if char == "" {
+			char = resWrdEscChar
+		}
 		d.ReservedWordEscapeChar = new(string)
 		*d.ReservedWordEscapeChar = char
 		return nil
@@ -213,6 +237,9 @@ func ReservedWordEscapeChar(char string) DataOption {
 // MaxOpenConnection sets maximum open connection
 func MaxOpenConnection(max int) DataOption {
 	return func(d *DataInfo) error {
+		if max == 0 {
+			max = maxOpnConn
+		}
 		d.MaxOpenConnection = new(int)
 		*d.MaxOpenConnection = max
 		return nil
@@ -222,6 +249,9 @@ func MaxOpenConnection(max int) DataOption {
 // MaxIdleConnection sets the maximum idle connection
 func MaxIdleConnection(max int) DataOption {
 	return func(d *DataInfo) error {
+		if max == 0 {
+			max = maxIdlConn
+		}
 		d.MaxIdleConnection = new(int)
 		*d.MaxIdleConnection = max
 		return nil
@@ -231,6 +261,9 @@ func MaxIdleConnection(max int) DataOption {
 // MaxConnectionLifetime sets the max connection lifetime of each open connection
 func MaxConnectionLifetime(max int) DataOption {
 	return func(d *DataInfo) error {
+		if max == 0 {
+			max = maxConnLt
+		}
 		d.MaxConnectionLifetime = new(int)
 		*d.MaxConnectionLifetime = max
 		return nil
@@ -240,6 +273,9 @@ func MaxConnectionLifetime(max int) DataOption {
 // MaxConnectionIdleTime sets the max idle connection lifetime
 func MaxConnectionIdleTime(max int) DataOption {
 	return func(d *DataInfo) error {
+		if max == 0 {
+			max = maxConnIdlLt
+		}
 		d.MaxConnectionIdleTime = new(int)
 		*d.MaxConnectionIdleTime = max
 		return nil
