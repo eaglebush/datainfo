@@ -100,6 +100,97 @@ func NewMinimal(connStr, schema, driver, user string, options ...DataOption) *Da
 	)
 }
 
+// Copy copies a reference DataInfo instance with options
+func Copy(di *DataInfo, options ...DataOption) *DataInfo {
+	n := DataInfo{}
+	if di.Schema != nil {
+		n.Schema = new(string)
+		*n.Schema = *di.Schema
+	}
+	if di.ReferenceMode != nil {
+		n.ReferenceMode = new(bool)
+		*n.ReferenceMode = *di.ReferenceMode
+	}
+	if di.ReferenceModePrefix != nil {
+		n.ReferenceModePrefix = new(string)
+		*n.ReferenceModePrefix = *di.ReferenceModePrefix
+	}
+	if di.InterpolateTables != nil {
+		n.InterpolateTables = new(bool)
+		*n.InterpolateTables = *di.InterpolateTables
+	}
+	if di.ConnectionString != nil {
+		n.ConnectionString = new(string)
+		*n.ConnectionString = *di.ConnectionString
+	}
+	if di.DriverName != nil {
+		n.DriverName = new(string)
+		*n.DriverName = *di.DriverName
+	}
+	if di.HelperID != nil {
+		n.HelperID = new(string)
+		*n.HelperID = *di.HelperID
+	}
+	if di.ParameterInSequence != nil {
+		n.ParameterInSequence = new(bool)
+		*n.ParameterInSequence = *di.ParameterInSequence
+	}
+	if di.ParameterPlaceHolder != nil {
+		n.ParameterPlaceHolder = new(string)
+		*n.ParameterPlaceHolder = *di.ParameterPlaceHolder
+	}
+	if di.StringEnclosingChar != nil {
+		n.StringEnclosingChar = new(string)
+		*n.StringEnclosingChar = *di.StringEnclosingChar
+	}
+	if di.StringEscapeChar != nil {
+		n.StringEscapeChar = new(string)
+		*n.StringEscapeChar = *di.StringEscapeChar
+	}
+	if di.ReservedWordEscapeChar != nil {
+		n.ReservedWordEscapeChar = new(string)
+		*n.ReservedWordEscapeChar = *di.ReservedWordEscapeChar
+	}
+	if di.MaxOpenConnection != nil {
+		n.MaxOpenConnection = new(int)
+		*n.MaxOpenConnection = *di.MaxOpenConnection
+	}
+	if di.MaxIdleConnection != nil {
+		n.MaxIdleConnection = new(int)
+		*n.MaxIdleConnection = *di.MaxIdleConnection
+	}
+	if di.MaxConnectionLifetime != nil {
+		n.MaxConnectionLifetime = new(int)
+		*n.MaxConnectionLifetime = *di.MaxConnectionLifetime
+	}
+	if di.MaxConnectionIdleTime != nil {
+		n.MaxConnectionIdleTime = new(int)
+		*n.MaxConnectionIdleTime = *di.MaxConnectionIdleTime
+	}
+	if di.Ping != nil {
+		n.Ping = new(bool)
+		*n.Ping = *di.Ping
+	}
+	if di.UserName != nil {
+		n.UserName = new(string)
+		*n.UserName = *di.UserName
+	}
+	if di.SequenceGenerator != nil {
+		n.SequenceGenerator = &SequenceGeneratorInfo{
+			UpsertQuery:     di.SequenceGenerator.UpsertQuery,
+			ResultQuery:     di.SequenceGenerator.ResultQuery,
+			NamePlaceHolder: di.SequenceGenerator.NamePlaceHolder,
+		}
+	}
+	for _, o := range options {
+		if o == nil {
+			continue
+		}
+		o(&n)
+	}
+	return &n
+}
+
 // Schema sets the schema of the data
 func Schema(sch string) DataOption {
 	return func(d *DataInfo) error {
