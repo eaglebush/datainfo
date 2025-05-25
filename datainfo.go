@@ -29,7 +29,6 @@ type (
 		MaxConnectionLifetime  *int                   // Max connection lifetime
 		MaxConnectionIdleTime  *int                   // Max idle connection lifetime
 		Ping                   *bool                  // Ping connection
-		UserName               *string                // User name to indicate who initiated the transaction call
 		SequenceGenerator      *SequenceGeneratorInfo // Sequence generator
 	}
 )
@@ -90,7 +89,6 @@ func NewMinimal(connStr, schema, driver, user string, options ...DataOption) *Da
 		ConnectionString(connStr),
 		Schema(schema),
 		DriverName(driver),
-		UserName(user),
 	}
 	if len(options) > 0 {
 		opts = append(opts, options...)
@@ -170,10 +168,6 @@ func Copy(di *DataInfo, options ...DataOption) *DataInfo {
 	if di.Ping != nil {
 		n.Ping = new(bool)
 		*n.Ping = *di.Ping
-	}
-	if di.UserName != nil {
-		n.UserName = new(string)
-		*n.UserName = *di.UserName
 	}
 	if di.SequenceGenerator != nil {
 		n.SequenceGenerator = &SequenceGeneratorInfo{
@@ -378,15 +372,6 @@ func Ping(indeed bool) DataOption {
 	return func(d *DataInfo) error {
 		d.Ping = new(bool)
 		*d.Ping = indeed
-		return nil
-	}
-}
-
-// UserName sets the user who initiated the transaction call
-func UserName(name string) DataOption {
-	return func(d *DataInfo) error {
-		d.UserName = new(string)
-		*d.UserName = name
 		return nil
 	}
 }
