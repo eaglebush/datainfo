@@ -4,7 +4,14 @@ import (
 	"time"
 )
 
+// Limit enum
+const (
+	FRONT LimitPosition = 0
+	REAR  LimitPosition = 1
+)
+
 type (
+	LimitPosition         uint8
 	SequenceGeneratorInfo struct {
 		UpsertQuery     string
 		ResultQuery     string
@@ -29,6 +36,7 @@ type (
 		MaxConnectionLifetime  *int                   // Max connection lifetime
 		MaxConnectionIdleTime  *int                   // Max idle connection lifetime
 		Ping                   *bool                  // Ping connection
+		ResultLimitPosition    LimitPosition          // For Old SQL Server versions, The limiter is in the front (TOP). For newer SQL Server, LIMIT at the rear is supported.
 		SequenceGenerator      *SequenceGeneratorInfo // Sequence generator
 	}
 )
@@ -40,6 +48,7 @@ var (
 	intTbls, paramInSeq bool
 	maxOpnConn, maxIdlConn,
 	maxConnLt, maxConnIdlLt int
+	lmit LimitPosition
 )
 
 func init() {
@@ -54,6 +63,7 @@ func init() {
 	maxIdlConn = 25
 	maxConnLt = int(5 * time.Minute)
 	maxConnIdlLt = int(3 * time.Minute)
+	lmit = REAR
 }
 
 // New initializes a common data info and accepts further option where the user could change
@@ -73,6 +83,7 @@ func New(options ...DataOption) *DataInfo {
 		MaxConnectionLifetime:  &maxConnLt,
 		MaxConnectionIdleTime:  &maxConnIdlLt,
 		Ping:                   new(bool),
+		ResultLimitPosition:    lmit,
 	}
 	for _, o := range options {
 		if o == nil {
@@ -176,6 +187,7 @@ func Copy(di *DataInfo, options ...DataOption) *DataInfo {
 			NamePlaceHolder: di.SequenceGenerator.NamePlaceHolder,
 		}
 	}
+	n.ResultLimitPosition = di.ResultLimitPosition
 	for _, o := range options {
 		if o == nil {
 			continue
@@ -372,6 +384,14 @@ func Ping(indeed bool) DataOption {
 	return func(d *DataInfo) error {
 		d.Ping = new(bool)
 		*d.Ping = indeed
+		return nil
+	}
+}
+
+// ResultLimitPosition sets the result limit position
+func ResultLimitPosition(l LimitPosition) DataOption {
+	return func(d *DataInfo) error {
+		d.ResultLimitPosition = l
 		return nil
 	}
 }
